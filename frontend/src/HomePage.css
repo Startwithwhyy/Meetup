@@ -1,0 +1,220 @@
+/* Container for the entire page layout */
+.page-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* First row: Image section */
+.image-container {
+  position: relative;
+  width: 100%; /* Full width */
+  height: 50vh; /* Adjust height as needed */
+  overflow: hidden; /* Ensure the image doesn't overflow */
+  margin-bottom: 30px; /* Space between image and buttons */
+}
+
+.home-image {
+  width: 100%; /* Full width */
+  height: 100%; /* Full height of the container */
+  object-fit: cover; /* Ensure the image covers the container */
+  display: block; /* Remove any unwanted space below the image */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
+  animation: fadeIn 2s ease-in-out; /* Fade-in animation */
+  opacity: 0; /* Start as invisible */
+  animation-fill-mode: forwards; /* Ensure the image stays visible after the animation */
+  transition: opacity 2s ease-in-out;
+}
+
+.image-container {
+  position: relative;
+  width: 100%; 
+  height: auto; 
+  min-height: 200px; 
+  max-height: 50vh; 
+  overflow: hidden; 
+  margin-bottom: 30px; 
+}
+
+@media (max-width: 768px) {
+  .image-container {
+    height: 30vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-container {
+    height: 25vh; /* Adjust height for even smaller screens */
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Date and time */
+.datetime {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  color: #fff;
+  z-index: 1;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Optional: add text shadow for better visibility */
+}
+
+/* Second row: Action buttons */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 50px 0;
+  padding: 0 50px; /* Add some padding for better alignment */
+}
+
+.action-button {
+  width: 200px; /* Adjust width */
+  height: 150px; /* Adjust height */
+  margin: 20px; /* Space between buttons */
+  position: relative;
+  font-size: 0.9rem; /* Adjust font size */
+  text-align: right;
+  background-color: #444; /* Darker background for buttons */
+  border: none; /* Remove default border */
+  border-radius: 8px; /* Rounded corners */
+  transition: transform 0.3s ease, background-color 0.3s ease; /* Add smooth transitions */
+}
+
+.action-button:hover {
+  transform: translateY(-5px); /* Lift button on hover */
+  background-color: #555; /* Change background color on hover */
+}
+
+.action-button-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 1.5rem;
+  background-color: rgba(172, 162, 162, 0.5);
+  border-radius: 10%;
+  padding: 2px;
+}
+
+/* Meeting history section */
+.meeting-history {
+  background-color: #333333; /* Darker grey background */
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto; /* Center the section and add margin */
+  padding: 20px;
+  border-radius: 8px; /* Rounded corners */
+}
+
+.history-card {
+  padding: 16px;
+  margin-bottom: 20px;
+  background-color: #333; /* Lighter grey background */
+  border-radius: 8px;
+  text-align: left;
+  font-size: 1rem; /* Adjust font size */
+  color: #9d9898; 
+}
+
+.drawer {
+  background-color: #333333 !important;
+  color: #fff !important;
+  transition: width 0.2s;
+}
+
+.drawer.open {
+  width: 250px;
+}
+
+.drawer.closed {
+  width: 60px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.menu-button {
+  color: #fff;
+}
+
+.sidebar-logo {
+  height: 30px;
+  margin-right: 10px;
+}
+
+.sidebar-title {
+  font-size: 1.2rem;
+  margin: 0;
+  color: white;
+}
+
+.MuiListItem-root,
+.MuiListItemIcon-root {
+  color: white !important;
+  transition: background-color 0.3s;
+}
+
+.MuiListItem-root:hover,
+.MuiListItemIcon-root:hover {
+  background-color: #66686a !important;
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.2s;
+  margin-left: 60px;
+}
+
+.content.open {
+  margin-left: 250px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center items horizontally */
+  background-color: black;
+  color: #fff;
+  padding: 10px;
+  border-bottom: none; /* Remove bottom border */
+  outline: none; /* Remove outline if present */
+}
+
+.profile-icon {
+  font-size: 2rem; /* Adjust icon size */
+  margin-left: auto; /* Push icon to the right */
+  background-color: #333; /* Background color for the icon */
+  color: #fff; /* Icon color */
+  width: 40px; /* Set a fixed width */
+  height: 40px; /* Set a fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* Rounded shape */
+  cursor: pointer; /* Cursor style */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+  transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+.profile-icon:hover {
+  transform: scale(1.1); 
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}

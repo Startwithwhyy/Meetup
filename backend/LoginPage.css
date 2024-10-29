@@ -1,0 +1,143 @@
+/* CSS Reset (optional) */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #1e1e1e; /* Dark background */
+  color: #ffffff; /* White text */
+  position: relative;
+}
+
+.logo {
+  width: 100px; /* Adjust size as needed */
+  margin-bottom: 10px; /* Space below logo */
+}
+
+.app-name {
+  font-size: 24px; /* Adjust font size as needed */
+  margin-bottom: 20px; /* Space below app name */
+}
+
+h2 {
+  font-size: 18px; /* Smaller font size for login and signup headings */
+  margin-bottom: 20px; /* Space below headings */
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 300px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+label {
+  font-size: 14px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #555555;
+  background-color: #333333; /* Gray background */
+  color: #ffffff;
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+input:focus,
+input:hover {
+  background-color: #444444; /* Darker background on focus and hover */
+  color: #ffffff; /* Maintain the same text color */
+  outline: none; /* Remove default outline */
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  background-color: #333333; /* Maintain the same background color */
+  color: #ffffff; /* Maintain the same text color */
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="text"]:hover {
+  background-color: #444444;
+}
+
+input[type="date"] {
+  color: #ffffff; /* White text */
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #333333; /* Dark background */
+  border: 1px solid #555555;
+}
+
+input[type="date"]:focus,
+input[type="date"]:hover {
+  background-color: #444444;
+}
+
+.submit-button {
+  padding: 12px;
+  background-color: #0069d9; /* Green background */
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: darker blue; /* Lighter green on hover */
+}
+
+.toggle-button {
+  background: none; /* Remove background color */
+  color: #ffffff;
+  padding: 10px; /* Adjust padding to your preference */
+  text-align: center; /* Center align text */
+  border: none;
+  cursor: pointer;
+  font-size: 18px; /* Larger font size for toggle button */
+}
+
+.toggle-button:hover {
+  color: #ffffff;
+  text-decoration: underline; /* Underline effect on hover */
+  background: none; /* Ensure background remains none */
+}
+
+.alert-box {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  z-index: 100;
+  width: 70%;
+  max-width: 400px;
+}
