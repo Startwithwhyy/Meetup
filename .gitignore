@@ -26,3 +26,4 @@ backend/node_modules/
 frontend/package-lock.json
 backend/package-lock.json
 backend/.env
+frontend/yarn.lock

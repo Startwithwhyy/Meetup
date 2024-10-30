@@ -139,6 +139,7 @@ function VideoChatPage() {
       setIsRinging(false);
       setCallAccepted(true);
       peer.signal(signal);
+      setDisplay('none');
     });
 
     connectionRef.current = peer;
@@ -146,6 +147,7 @@ function VideoChatPage() {
 
   const answerCall = () => {
     setCallAccepted(true);
+    setDisplay('none');
 
     const peer = new Peer({
       initiator: false,
