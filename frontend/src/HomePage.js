@@ -18,9 +18,20 @@ const HomePage = () => {
   const [meetingDateTime, setMeetingDateTime] = useState(new Date());
   const [meetingLink, setMeetingLink] = useState('');
   const [successMessage, setSuccessMessage] = useState(false); // Snackbar state
+  const [meetings, setMeetings] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        const response = await fetch('/api/meetings');
+        const data = await response.json();
+        setMeetings(data.length > 2 ? data.slice(-2) : data);
+      } catch(e) {
+        console.error(e);
+      }
+    }
+    fetchMeetings();
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -80,7 +91,7 @@ const HomePage = () => {
   };
 
   const viewRecordings = () => {
-    console.log('Viewing recordings...');
+    navigate('/recordings');
   };
 
   const formatTime = (date) => {
@@ -153,16 +164,18 @@ const HomePage = () => {
         </Grid>
         <div className="meeting-history">
           <Typography variant="h6" gutterBottom>Meeting History</Typography>
-          <Card style={{ backgroundColor: '#777', padding: '16px', marginBottom: '20px', borderRadius: '8px', color: '#fff' }}>
-            <CardContent>
-              <Typography variant="body2">Meeting with Team A - 10:00 AM</Typography>
-            </CardContent>
-          </Card>
-          <Card style={{ backgroundColor: '#666', padding: '16px', marginBottom: '20px', borderRadius: '8px', color: '#fff' }}>
-            <CardContent>
-              <Typography variant="body2">Project Discussion - 2:00 PM</Typography>
-            </CardContent>
-          </Card>
+          {meetings.length > 0 ? (
+            meetings.map(m => (
+              <Card style={{ backgroundColor: '#777', padding: '16px', marginBottom: '20px', borderRadius: '8px', color: '#fff' }}>
+                <CardContent>
+                  <Typography variant="body2">{m.title}</Typography>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p>No meetings found</p>
+          )}
+          
         </div>
       </div>
 

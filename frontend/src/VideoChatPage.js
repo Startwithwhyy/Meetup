@@ -14,8 +14,11 @@ import {
   FaSmile,
   FaUserPlus,
   FaShareAlt,
+  FaBackward,
+  FaHome,
 } from 'react-icons/fa';
 import './VideoChatPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const socket = io.connect('http://localhost:5000');
 
@@ -36,10 +39,13 @@ function VideoChatPage() {
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [showReactions, setShowReactions] = useState(false);
   const [participants, setParticipants] = useState([]);
+  const [reactions, setReactions] = useState([]);
   const [idToCall, setIdToCall] = useState('');
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
+  const navigate = useNavigate();
+  const [disp, setDisplay] = useState('flex');
 
   useEffect(() => {
 
@@ -80,6 +86,7 @@ function VideoChatPage() {
     socket.on('callAccepted', () => {
       setIsRinging(false);
       setCallAccepted(true);
+      setDisplay('none');
     });
 
     socket.on('newParticipant', (participant) => {
@@ -89,6 +96,16 @@ function VideoChatPage() {
     socket.on('removeParticipant', (participantId) => {
       setParticipants((prev) => prev.filter(p => p.id !== participantId));
     });
+
+    socket.on('receiveReaction', (data) => {
+      setReactions((prev) => [...prev, { from: data.from, emoji: data.emoji }]);
+      setTimeout(() => {
+        setReactions((prev) => prev.filter((reaction) => reaction.emoji !== data.emoji));
+      }, 3000);
+      setTimeout(() => {
+        document.querySelectorAll('.reaction-bubble').forEach((el) => el.classList.add('fade-out'));
+      }, 2500);
+    })
 
     return () => {
       socket.disconnect();
@@ -108,7 +125,7 @@ function VideoChatPage() {
         userToCall: id,
         signalData: data,
         from: me,
-        name: name,
+        name: localStorage.getItem('fullName').split(' ')[0],
       });
     });
 
@@ -152,11 +169,12 @@ function VideoChatPage() {
   };
 
   const leaveCall = () => {
-    // TODO: add to previous
     setCallEnded(true);
     setCallAccepted(false);
     setReceivingCall(false);
     setIsRinging(false);
+    addPreviousMeeting({title: 'title', date: Date.now(), duration: '1h', participants: caller, notes: 'Notes'});
+    setDisplay('flex');
     if (connectionRef.current) {
       connectionRef.current.destroy();
     }
@@ -168,7 +186,7 @@ function VideoChatPage() {
       const newMuteAudio = !prevMuteAudio;
       if (stream) {
         stream.getAudioTracks().forEach((track) => {
-          track.enabled = !newMuteAudio;
+          track.enabled = newMuteAudio;
         });
       }
       return newMuteAudio;
@@ -259,9 +277,41 @@ function VideoChatPage() {
     });
   };
 
+  const sendReaction = (emoji) => {
+    socket.emit('sendReaction', { from: me, emoji });
+    setReactions((prev) => [...prev, { from: me, emoji }]);
+      setTimeout(() => {
+        setReactions((prev) => prev.filter((reaction) => reaction.emoji !== emoji));
+      }, 3000);
+      setTimeout(() => {
+        document.querySelectorAll('.reaction-bubble').forEach((el) => el.classList.add('fade-out'));
+      }, 2500);
+  };
+
+  const addPreviousMeeting = async (newMeeting) => {
+    try {
+      const response = await fetch('/api/meetings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newMeeting)
+      });
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  const goHome = () => {
+    navigate('/home');
+    window.location.reload();
+  }
+  
+
   return (
     <div className="container">
       <div className="video-container">
+        <FaHome onClick={goHome} style={{cursor: 'pointer', display: disp}} />
         <div className="video">
           {stream && <video playsInline muted ref={myVideo} autoPlay />}
           <div className="video-buttons">
@@ -274,17 +324,17 @@ function VideoChatPage() {
             <button onClick={shareScreen} className="screen-share-button">
               <FaShareAlt />
             </button>
-            <button onClick={addParticipant} className="add-participant-button">
+            {/* <button onClick={addParticipant} className="add-participant-button">
               <FaUserPlus />
-            </button>
+            </button> */}
             <button onClick={toggleReactions} className="reaction-button">
               <FaSmile />
             </button>
             {showReactions && (
               <div className="reaction-dropdown">
-                <span className="reaction">😊</span>
-                <span className="reaction">😢</span>
-                <span className="reaction">😂</span>
+                <span className="reaction" onClick={() => sendReaction('😊')}>😊</span>
+                <span className="reaction" onClick={() => sendReaction('😢')}>😢</span>
+                <span className="reaction" onClick={() => sendReaction('😂')}>😂</span>
               </div>
             )}
             <button onClick={isRecording ? stopRecording : startRecording}>
@@ -323,6 +373,14 @@ function VideoChatPage() {
             Copy ID
           </button>
         </CopyToClipboard>
+      </div>
+
+      <div className="reactions-container">
+        {reactions.map((reaction, index) => (
+          <div key={index} className="reaction-bubble">
+            {reaction.emoji}
+          </div>
+        ))}
       </div>
     </div>
   );

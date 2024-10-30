@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
-const User = require('./user');
+const User = require('../models/user');
 require('dotenv').config();
 
 const router = express.Router();
@@ -65,7 +65,7 @@ router.post(
         { expiresIn: '1h' },
         (err, token) => {
           if (err) throw err;
-          res.status(201).json({ token, user: {username: user.username, email: user.email} });
+          res.status(201).json({ token, user: {name: user.name, username: user.username, email: user.email} });
         }
       );
     } catch (err) {
@@ -115,7 +115,7 @@ router.post(
         { expiresIn: '1h' },
         (err, token) => {
           if (err) throw err;
-          res.status(201).json({ token, user: { username: user.username, email: user.email } });
+          res.status(201).json({ token, user: { name: user.name, username: user.username, email: user.email } });
         }
       );
     } catch (err) {

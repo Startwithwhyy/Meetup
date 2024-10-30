@@ -5,6 +5,9 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 require("dotenv").config();
 
+const authRouter = require('./routes/auth');
+const meetingsRouter = require('./routes/meetings');
+
 const app = express();
 const server = http.createServer(app);
 
@@ -16,8 +19,9 @@ mongoose.connect(process.env.MONGO_ATLAS, { useNewUrlParser: true, useUnifiedTop
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log("MongoDB connection error:", error));
 
-// // Routes
-app.use("/api/auth", require("./auth"));
+// Routes
+app.use('/api/auth', authRouter);
+app.use('/api/meetings', meetingsRouter);
 
 // Socket.IO setup
 const io = new Server(server, {
@@ -47,8 +51,12 @@ io.on("connection", (socket) => {
     io.to(data.to).emit("callAccepted", data.signal);
   });
 
-  socket.on("sendEmoji", (emoji) => {
-    socket.broadcast.emit("receiveEmoji", emoji);
+  // socket.on("sendEmoji", (emoji) => {
+  //   socket.broadcast.emit("receiveEmoji", emoji);
+  // });
+
+  socket.on('sendReaction', (data) => {
+    socket.broadcast.emit('receiveReaction', data);
   });
 });
 

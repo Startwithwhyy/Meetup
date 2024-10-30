@@ -37,6 +37,7 @@ const LoginPage = () => {
         const data = await res.json();
 
         if (res.status === 201) {
+          localStorage.setItem('fullName', data.user.name);
           localStorage.setItem('username', data.user.username);
           localStorage.setItem('uemail', data.user.email);
           localStorage.setItem('token', data.token);
@@ -66,6 +67,7 @@ const LoginPage = () => {
         console.log(data);
 
         if (res.status === 201) {
+          localStorage.setItem('fullName', data.user.name);
           localStorage.setItem('username', data.user.username);
           localStorage.setItem('uemail', data.user.email);
           localStorage.setItem('token', data.token);

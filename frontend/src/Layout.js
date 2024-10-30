@@ -53,6 +53,7 @@ const Layout = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('fullName');
     localStorage.removeItem('username');
     localStorage.removeItem('uemail');
     navigate('/login');
