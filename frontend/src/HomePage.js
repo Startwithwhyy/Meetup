@@ -8,7 +8,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import './HomePage.css';
 import homeImage from './home.png'; // Replace with your actual home image URL
 import Layout from './Layout'; // Import Layout component
-import { backendUrl } from '../../constants';
+import { backendUrl } from './constants';
 
 const HomePage = () => {
   const [currentTime, setCurrentTime] = useState(new Date());

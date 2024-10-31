@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import logo from './logo.png'; // Ensure this path is correct
-import { backendUrl } from '../../constants';
+import { backendUrl } from './constants';
 
 const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);

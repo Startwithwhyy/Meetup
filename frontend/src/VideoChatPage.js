@@ -19,7 +19,7 @@ import {
 } from 'react-icons/fa';
 import './VideoChatPage.css';
 import { useNavigate } from 'react-router-dom';
-import { backendUrl } from '../../constants';
+import { backendUrl } from './constants';
 
 const socket = io(backendUrl, {
   transports: ['websocket', 'polling'],

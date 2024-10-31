@@ -7,7 +7,6 @@ require("dotenv").config();
 
 const authRouter = require('./routes/auth');
 const meetingsRouter = require('./routes/meetings');
-const { frontendUrl } = require("../constants");
 
 const app = express();
 const server = http.createServer(app);
@@ -33,7 +32,7 @@ app.use((req, res, next) => {
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: frontendUrl,
+    origin: 'https://3d57c6a79d7873be2310178cbae72e23.loophole.site',
     methods: ["GET", "POST"],
   },
   transports: ["websocket"]

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './Previous.css';
 import Layout from './Layout';
-import { backendUrl } from '../../constants';
+import { backendUrl } from './constants';
 
 const Previous = () => {
   const [meetings, setMeetings] = useState([]);
