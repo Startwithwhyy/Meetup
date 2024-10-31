@@ -8,6 +8,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import './HomePage.css';
 import homeImage from './home.png'; // Replace with your actual home image URL
 import Layout from './Layout'; // Import Layout component
+import { backendUrl } from '../../constants';
 
 const HomePage = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -24,7 +25,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchMeetings = async () => {
       try {
-        const response = await fetch('/api/meetings');
+        const response = await fetch(`${backendUrl}/api/meetings`);
         const data = await response.json();
         setMeetings(data.length > 2 ? data.slice(-2) : data);
       } catch(e) {
@@ -166,7 +167,7 @@ const HomePage = () => {
           <Typography variant="h6" gutterBottom>Meeting History</Typography>
           {meetings.length > 0 ? (
             meetings.map(m => (
-              <Card style={{ backgroundColor: '#777', padding: '16px', marginBottom: '20px', borderRadius: '8px', color: '#fff' }}>
+              <Card key={m._id} style={{ backgroundColor: '#777', padding: '16px', marginBottom: '20px', borderRadius: '8px', color: '#fff' }}>
                 <CardContent>
                   <Typography variant="body2">{m.title}</Typography>
                 </CardContent>

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './Previous.css';
 import Layout from './Layout';
+import { backendUrl } from '../../constants';
 
 const Previous = () => {
   const [meetings, setMeetings] = useState([]);
@@ -10,7 +11,7 @@ const Previous = () => {
     const fetchMeetings = async () => {
       setLoading(true);
       try {
-        const response = await fetch('/api/meetings');
+        const response = await fetch(`${backendUrl}/api/meetings`);
         const data = await response.json();
         setMeetings(data);
       } catch (error) {

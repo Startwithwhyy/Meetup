@@ -118,6 +118,7 @@ router.post(
           res.status(201).json({ token, user: { name: user.name, username: user.username, email: user.email } });
         }
       );
+      console.log(`${user.username} logged in`);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server error');

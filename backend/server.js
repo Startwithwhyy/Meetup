@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const authRouter = require('./routes/auth');
 const meetingsRouter = require('./routes/meetings');
+const { frontendUrl } = require("../constants");
 
 const app = express();
 const server = http.createServer(app);
@@ -15,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_ATLAS, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_ATLAS)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log("MongoDB connection error:", error));
 
@@ -23,17 +24,29 @@ mongoose.connect(process.env.MONGO_ATLAS, { useNewUrlParser: true, useUnifiedTop
 app.use('/api/auth', authRouter);
 app.use('/api/meetings', meetingsRouter);
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: frontendUrl,
     methods: ["GET", "POST"],
   },
+  transports: ["websocket"]
 });
 
 io.on("connection", (socket) => {
   // Emit user's socket ID to the client
   socket.emit("me", socket.id);
+
+  console.log("Socket connected:", socket.id);
+  socket.on("connect_error", (err) => {
+    console.error("Connection error:", err);
+  });
 
   socket.on("disconnect", () => {
     socket.broadcast.emit("callEnded");

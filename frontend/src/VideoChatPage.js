@@ -19,8 +19,11 @@ import {
 } from 'react-icons/fa';
 import './VideoChatPage.css';
 import { useNavigate } from 'react-router-dom';
+import { backendUrl } from '../../constants';
 
-const socket = io.connect('http://localhost:5000');
+const socket = io(backendUrl, {
+  transports: ['websocket', 'polling'],
+});
 
 function VideoChatPage() {
   const [me, setMe] = useState('');
@@ -61,7 +64,7 @@ function VideoChatPage() {
         console.error('Error accessing media devices:', error);
       });
 
-      console.log(socket)
+    console.log(socket)
 
     socket.on('connect', () => {
       console.log('Connected to server with ID:', socket.id);
@@ -73,7 +76,6 @@ function VideoChatPage() {
 
     socket.on('me', (id) => {
       setMe(id);
-      console.log(id);
     });
 
     socket.on('callUser', (data) => {
@@ -287,7 +289,7 @@ function VideoChatPage() {
       }, 3000);
       setTimeout(() => {
         document.querySelectorAll('.reaction-bubble').forEach((el) => el.classList.add('fade-out'));
-      }, 2500);
+      }, 3000);
   };
 
   const addPreviousMeeting = async (newMeeting) => {
@@ -370,7 +372,7 @@ function VideoChatPage() {
           onChange={(e) => setIdToCall(e.target.value)}
         />
 
-        <CopyToClipboard text={me} style={{cursor: 'pointer'}}>
+        <CopyToClipboard text={me} style={{cursor: 'pointer'}} onCopy={() => console.log('copied')}>
           <button className="copy-id-button" disabled={!me}>
             Copy ID
           </button>

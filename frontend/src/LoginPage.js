@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import logo from './logo.png'; // Ensure this path is correct
+import { backendUrl } from '../../constants';
 
 const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -26,7 +27,7 @@ const LoginPage = () => {
       }
 
       try {
-        const res = await fetch('/api/auth/signup', {
+        const res = await fetch(`${backendUrl}/api/auth/signup`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ const LoginPage = () => {
       }
 
       try {
-        const res = await fetch('/api/auth/login', {
+        const res = await fetch(`${backendUrl}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -64,7 +65,6 @@ const LoginPage = () => {
         });
 
         const data = await res.json();
-        console.log(data);
 
         if (res.status === 201) {
           localStorage.setItem('fullName', data.user.name);
