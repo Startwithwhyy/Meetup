@@ -23,5 +23,16 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const meeting = await Meeting.findByIdAndDelete(id);
+        res.status(200).json(meeting);
+        console.log('meeting deleted');
+    } catch (e) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 
 module.exports = router;

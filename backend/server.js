@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: 'https://3d57c6a79d7873be2310178cbae72e23.loophole.site',
+    origin: ['http://localhost:3000', 'https://3d57c6a79d7873be2310178cbae72e23.loophole.site'],
     methods: ["GET", "POST"],
   },
   transports: ["websocket"]

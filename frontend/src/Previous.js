@@ -24,6 +24,21 @@ const Previous = () => {
     fetchMeetings();
   }, []);
 
+  const handleDelete = async (meetingId) => {
+    try {
+      const response = await fetch(`${backendUrl}/api/meetings/${meetingId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      setMeetings(meetings.filter(m => m._id != meetingId));
+    } catch (error) {
+      console.error('Error deleting meeting', error);
+    }
+  }
+
   return (
     <Layout>
       <div className="previous-container">
@@ -35,25 +50,28 @@ const Previous = () => {
             ) : (
               meetings.length > 0 ? (
                 meetings.map((meeting) => (
-                  <div key={meeting.id} className="event-box">
+                  <div key={meeting._id} className="event-box">
                     <div className="event-header">
                       <div className="event-title">{meeting.title}</div>
                       <div className="event-date">{meeting.date}</div>
                     </div>
                     <div className="event-details">
                       <p>
-                        <strong>Duration:</strong> {meeting.duration}
+                        <strong>Description:</strong> {meeting.description}
                       </p>
                       <p>
-                        <strong>Participants:</strong> {meeting.participants}
+                        <strong>Duration:</strong> {meeting.duration}
                       </p>
+                      {/* <p>
+                        <strong>Participants:</strong> {meeting.participants}
+                      </p> */}
                       <p>
                         <strong>Notes:</strong> {meeting.notes}
                       </p>
                     </div>
                     <div className="event-actions">
                       <button className="details-button">Export Summary</button>
-                      <button className="delete-button">Delete</button>
+                      <button className="delete-button" onClick={() => handleDelete(meeting._id)}>Delete</button>
                     </div>
                   </div>
                 ))

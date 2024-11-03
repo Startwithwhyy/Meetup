@@ -177,7 +177,8 @@ function VideoChatPage() {
     setCallAccepted(false);
     setReceivingCall(false);
     setIsRinging(false);
-    addPreviousMeeting({title: 'title', date: Date.now(), duration: '1h', participants: caller, notes: 'Notes'});
+    const newMeeting = JSON.parse(localStorage.getItem('onGoingMeeting'));
+    addPreviousMeeting({...newMeeting, notes: 'Notes', duration: '1h'});
     setDisplay('flex');
     if (connectionRef.current) {
       connectionRef.current.destroy();

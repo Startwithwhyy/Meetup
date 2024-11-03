@@ -18,6 +18,7 @@ const HomePage = () => {
   const [meetingDescription, setMeetingDescription] = useState('');
   const [meetingDateTime, setMeetingDateTime] = useState(new Date());
   const [meetingLink, setMeetingLink] = useState('');
+  const [meetingTitle, setMeetingTitle] = useState('');
   const [successMessage, setSuccessMessage] = useState(false); // Snackbar state
   const [meetings, setMeetings] = useState([]);
   const navigate = useNavigate();
@@ -42,7 +43,16 @@ const HomePage = () => {
 
   const handleStart = () => {
     console.log('Starting new meeting...');
-    setOpenStartDialog(false); // Close the dialog after starting the meeting
+
+    if (meetingTitle.length == 0 || meetingDescription.length == 0) return;
+
+    const newMeeting = {
+      title: meetingTitle,
+      description: meetingDescription,
+      dateTime: Date.now()
+    }
+    setOpenStartDialog(false); 
+    localStorage.setItem('onGoingMeeting', JSON.stringify(newMeeting));
     navigate('/video'); // Navigate to the video meeting page
   };
 
@@ -63,6 +73,8 @@ const HomePage = () => {
 
     // Save the meeting details to local storage
     const meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+
+    if (meetingDescription.length == 0 || meetingTitle == 0) return;
     const newMeeting = {
       description: meetingDescription,
       dateTime: meetingDateTime,
@@ -165,7 +177,7 @@ const HomePage = () => {
         </Grid>
         <div className="meeting-history">
           <Typography variant="h6" gutterBottom>Meeting History</Typography>
-          {meetings.length > 0 ? (
+          {meetings.length > 0 && (
             meetings.map(m => (
               <Card key={m._id} style={{ backgroundColor: '#777', padding: '16px', marginBottom: '20px', borderRadius: '8px', color: '#fff' }}>
                 <CardContent>
@@ -173,8 +185,6 @@ const HomePage = () => {
                 </CardContent>
               </Card>
             ))
-          ) : (
-            <p>No meetings found</p>
           )}
           
         </div>
@@ -210,7 +220,16 @@ const HomePage = () => {
           }}
         >
           <TextField
+            required
             autoFocus
+            margin="dense"
+            label="Meeting Title"
+            fullWidth
+            value={meetingTitle}
+            onChange={(e) => setMeetingTitle(e.target.value)}
+          />
+          <TextField
+            required
             margin="dense"
             label="Meeting Description"
             fullWidth
@@ -218,6 +237,7 @@ const HomePage = () => {
             onChange={(e) => setMeetingDescription(e.target.value)}
           />
           <TextField
+            required
             margin="dense"
             label="Date and Time"
             type="datetime-local"
@@ -276,6 +296,7 @@ const HomePage = () => {
           }}
         >
           <TextField
+            required
             autoFocus
             margin="dense"
             label="Meeting Link"
@@ -327,6 +348,25 @@ const HomePage = () => {
         >
           Start a Meeting
         </DialogTitle>
+        <DialogContent>
+          <TextField
+            required
+            autoFocus
+            margin="dense"
+            label="Meeting Title"
+            fullWidth
+            value={meetingTitle}
+            onChange={(e) => setMeetingTitle(e.target.value)}
+          />
+          <TextField
+            required
+            margin="dense"
+            label="Meeting Description"
+            fullWidth
+            value={meetingDescription}
+            onChange={(e) => setMeetingDescription(e.target.value)}
+          />
+        </DialogContent>
         <DialogActions sx={{ justifyContent: 'center' }}> {/* Center the button */}
           <Button
             onClick={handleStart}
