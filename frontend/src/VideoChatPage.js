@@ -191,7 +191,7 @@ function VideoChatPage() {
       const newMuteAudio = !prevMuteAudio;
       if (stream) {
         stream.getAudioTracks().forEach((track) => {
-          track.enabled = newMuteAudio;
+          track.enabled = !newMuteAudio;
         });
       }
       return newMuteAudio;
@@ -273,13 +273,60 @@ function VideoChatPage() {
   };
 
   const shareScreen = () => {
-    navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
-      if (myVideo.current) {
-        myVideo.current.srcObject = stream;
-      }
-    }).catch((error) => {
-      console.error('Error sharing screen:', error);
-    });
+    navigator.mediaDevices.getDisplayMedia({ video: true })
+      .then((stream) => {
+        // Set your own video element to display the shared screen
+        if (myVideo.current) {
+          myVideo.current.srcObject = stream;
+        }
+  
+        // Get the screen video track
+        const screenTrack = stream.getVideoTracks()[0];
+  
+        // Replace the video track in the peer connection
+        const sender = peerConnection
+          .getSenders()
+          .find((s) => s.track && s.track.kind === "video");
+  
+        if (sender) {
+          sender.replaceTrack(screenTrack);
+        }
+  
+        // Listen for when the user stops sharing the screen
+        screenTrack.onended = () => {
+          // Revert back to the original video stream (e.g., webcam)
+          stopScreenSharing();
+        };
+      })
+      .catch((error) => {
+        console.error("Error sharing screen:", error);
+      });
+  };
+  
+  // Function to stop screen sharing and switch back to the original video
+  const stopScreenSharing = () => {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        // Set your own video element back to the webcam
+        if (myVideo.current) {
+          myVideo.current.srcObject = stream;
+        }
+  
+        // Get the original video track
+        const originalTrack = stream.getVideoTracks()[0];
+  
+        // Replace the screen sharing track with the original webcam track
+        const sender = peerConnection
+          .getSenders()
+          .find((s) => s.track && s.track.kind === "video");
+  
+        if (sender) {
+          sender.replaceTrack(originalTrack);
+        }
+      })
+      .catch((error) => {
+        console.error("Error stopping screen sharing:", error);
+      });
   };
 
   const sendReaction = (emoji) => {
@@ -340,6 +387,10 @@ function VideoChatPage() {
                 <span className="reaction" onClick={() => sendReaction('😊')}>😊</span>
                 <span className="reaction" onClick={() => sendReaction('😢')}>😢</span>
                 <span className="reaction" onClick={() => sendReaction('😂')}>😂</span>
+                <span className='reaction' onClick={() => sendReaction('👍')}>👍</span>
+                <span className='reaction' onClick={() => sendReaction('👎')}>👎</span>
+                <span className='reaction' onClick={() => sendReaction('❤️')}>❤️</span>
+                <span className='reaction' onClick={() => sendReaction('😘')}>😘</span>
               </div>
             )}
             <button onClick={isRecording ? stopRecording : startRecording}>
