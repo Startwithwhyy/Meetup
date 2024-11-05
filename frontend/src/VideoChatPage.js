@@ -52,17 +52,19 @@ function VideoChatPage() {
 
   useEffect(() => {
 
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        setStream(stream);
+    const getMedia = async () => {
+      try {
+        const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setStream(mediaStream);
         if (myVideo.current) {
-          myVideo.current.srcObject = stream;
+          myVideo.current.srcObject = mediaStream;
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error accessing media devices:', error);
-      });
+      }
+    };
+
+    getMedia();
 
     console.log(socket)
 
@@ -187,15 +189,15 @@ function VideoChatPage() {
   };
 
   const toggleMuteAudio = () => {
-    setMuteAudio((prevMuteAudio) => {
-      const newMuteAudio = !prevMuteAudio;
-      if (stream) {
-        stream.getAudioTracks().forEach((track) => {
-          track.enabled = !newMuteAudio;
-        });
-      }
-      return newMuteAudio;
-    });
+    if (stream) {
+      const newMuteAudio = !muteAudio;
+
+      stream.getAudioTracks().forEach((track) => {
+        track.enabled = !newMuteAudio;
+      });
+
+      setMuteAudio(newMuteAudio);
+    }
   };
 
   const toggleCamera = () => {
@@ -272,62 +274,34 @@ function VideoChatPage() {
     }
   };
 
-  const shareScreen = () => {
-    navigator.mediaDevices.getDisplayMedia({ video: true })
-      .then((stream) => {
-        // Set your own video element to display the shared screen
+  const shareScreen = async () => {
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      if (myVideo.current) {
+        myVideo.current.srcObject = screenStream;
+      }
+  
+      // Stop sharing when the user stops the screen share
+      screenStream.getVideoTracks()[0].onended = () => {
         if (myVideo.current) {
-          myVideo.current.srcObject = stream;
+          myVideo.current.srcObject = stream; // Revert to the webcam stream
         }
+      };
   
-        // Get the screen video track
-        const screenTrack = stream.getVideoTracks()[0];
-  
-        // Replace the video track in the peer connection
-        const sender = peerConnection
-          .getSenders()
-          .find((s) => s.track && s.track.kind === "video");
-  
-        if (sender) {
-          sender.replaceTrack(screenTrack);
-        }
-  
-        // Listen for when the user stops sharing the screen
-        screenTrack.onended = () => {
-          // Revert back to the original video stream (e.g., webcam)
-          stopScreenSharing();
-        };
-      })
-      .catch((error) => {
-        console.error("Error sharing screen:", error);
-      });
+      // Send the screen stream to the other participant if call is accepted
+      if (callAccepted) {
+        connectionRef.current.replaceTrack(
+          connectionRef.current.streams[0].getVideoTracks()[0], 
+          screenStream.getVideoTracks()[0], 
+          connectionRef.current.streams[0]
+        );
+      }
+    } catch (error) {
+      console.error('Error sharing screen:', error);
+      // Optionally provide user feedback here
+    }
   };
   
-  // Function to stop screen sharing and switch back to the original video
-  const stopScreenSharing = () => {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        // Set your own video element back to the webcam
-        if (myVideo.current) {
-          myVideo.current.srcObject = stream;
-        }
-  
-        // Get the original video track
-        const originalTrack = stream.getVideoTracks()[0];
-  
-        // Replace the screen sharing track with the original webcam track
-        const sender = peerConnection
-          .getSenders()
-          .find((s) => s.track && s.track.kind === "video");
-  
-        if (sender) {
-          sender.replaceTrack(originalTrack);
-        }
-      })
-      .catch((error) => {
-        console.error("Error stopping screen sharing:", error);
-      });
-  };
 
   const sendReaction = (emoji) => {
     socket.emit('sendReaction', { from: me, emoji });

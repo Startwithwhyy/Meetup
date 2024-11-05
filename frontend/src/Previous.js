@@ -14,6 +14,7 @@ const Previous = () => {
         const response = await fetch(`${backendUrl}/api/meetings`);
         const data = await response.json();
         setMeetings(data);
+        console.log(meetings);
       } catch (error) {
         console.error('Error fetching meetings:', error);
       } finally {

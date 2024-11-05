@@ -12,8 +12,10 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { title, date, duration, participants, notes } = req.body;
-    const newMeeting = new Meeting({ title, date, duration, participants, notes });
+    const { title, description, date, duration, participants, notes } = req.body;
+    const existing = await Meeting.findOne({ title, description });
+    if (existing) return;
+    const newMeeting = new Meeting({ title, description, date, duration, participants, notes });
 
     try {
         const savedMeeting = await newMeeting.save();

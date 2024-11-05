@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const MeetingSchema = new mongoose.Schema({
     title: String,
+    description: String,
     date: String,
     duration: String,
     participants: String,
